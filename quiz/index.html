@@ -380,7 +380,7 @@ function apresentador(){
     $('comecar').onclick=()=>{ctx();if(!Object.keys(J).length)return;setE({fase:'intro',rod:rodSel,qi:0})};
     botaoReiniciar($('novo'));
     $('rodape').innerHTML='<span>Toque num jogador para removê-lo</span><span><kbd>Espaço</kbd> começa · <kbd>F</kbd> tela cheia</span>';
-    desenhaJogadores();tocar('lobby');
+    desenhaJogadores();
   }
   let vistos=new Set();
   function desenhaJogadores(){const el=$('jog');if(!el)return;const ids=Object.keys(J).sort((a,b)=>(J[a].entrou||0)-(J[b].entrou||0));
@@ -405,7 +405,7 @@ function apresentador(){
   function pergunta(){
     palco.innerHTML=bloco(false);const C=2*Math.PI*42,arco=$('arco');arco.style.strokeDasharray=C;
     const t0=typeof E.t0==='number'?E.t0:NET.now();let ult=-1,resta=TEMPO;
-    tocar('pergunta',()=>resta<=5);
+    
     timer=setInterval(()=>{resta=Math.max(0,TEMPO-(NET.now()-t0)/1000);arco.style.strokeDashoffset=C*(1-resta/TEMPO);const s=Math.ceil(resta);if(s!==ult){ult=s;$('seg').textContent=s;if(s<=5&&s>0)sTique();$('rel').classList.toggle('alerta',s<=5)}if(resta<=0){sFim();revelar()}},100);
     $('rodape').innerHTML='<span><kbd>Espaço</kbd> encerra a pergunta</span><span>'+RODADAS[E.rod].nome+' · '+(E.qi+1)+'/'+RODADAS[E.rod].perguntas.length+'</span>';
     atualizaParcial()}
