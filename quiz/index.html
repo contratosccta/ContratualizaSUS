@@ -111,8 +111,7 @@ kbd{background:var(--bg3);border:1px solid var(--linha);border-radius:6px;paddin
 .resp{position:relative;border-radius:18px;display:flex;align-items:center;gap:2.4vh;padding:1.8vh 3vh;font-weight:800;font-size:clamp(18px,3.4vh,40px);line-height:1.15;color:#fff;box-shadow:0 7px 0 rgba(0,0,0,.28);transition:opacity .4s,transform .4s,filter .4s;min-height:12vh}
 .resp svg.f{flex:none;width:clamp(34px,6vh,68px);height:clamp(34px,6vh,68px)}
 .resp .txt{min-width:0;text-wrap:balance;flex:1}
-.resp.A{background:var(--a)}.resp.B{background:var(--b)}.resp.C{background:var(--c);color:#2A1D00}.resp.D{background:var(--d)}
-.resp.C svg.f *{fill:#2A1D00}
+.resp.A{background:var(--a)}.resp.B{background:var(--b)}.resp.C{background:var(--c)}.resp.D{background:var(--d)}
 .resp .qtd{flex:none;font-weight:900;font-size:.9em;background:rgba(0,0,0,.22);border-radius:12px;padding:.4vh 1.4vh;font-variant-numeric:tabular-nums}
 .revelado .resp.errada{opacity:.25;filter:grayscale(.7);transform:scale(.97)}
 .revelado .resp.certa{outline:6px solid #fff;transform:scale(1.02)}
@@ -176,8 +175,7 @@ canvas#confete{position:fixed;inset:0;width:100%;height:100%;pointer-events:none
 .botoes button{border:0;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;color:#fff;font-weight:800;font-size:17px;line-height:1.2;box-shadow:0 6px 0 rgba(0,0,0,.3)}
 .botoes button:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.3)}
 .botoes svg{width:56px;height:56px}
-.botoes .A{background:var(--a)}.botoes .B{background:var(--b)}.botoes .C{background:var(--c);color:#2A1D00}.botoes .D{background:var(--d)}
-.botoes .C svg *{fill:#2A1D00}
+.botoes .A{background:var(--a)}.botoes .B{background:var(--b)}.botoes .C{background:var(--c)}.botoes .D{background:var(--d)}
 .res{flex:1;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px}
 .res.ok{background:#1E7A3C}.res.no{background:#A8261E}.res.neutro{background:var(--bg2)}
 .res h2{font-size:36px;font-weight:900}
@@ -195,6 +193,7 @@ canvas#confete{position:fixed;inset:0;width:100%;height:100%;pointer-events:none
   .qtopo .respcont{display:none}
 }
 @media (prefers-reduced-motion:reduce){.bgshapes i,.bolha,.espera .av{animation:none}.coluna,.degrau .av,.degrau .quemp,.degrau .ptsp{animation-duration:.01s}}
+.ic.alerta{background:#E5483B;border-color:#E5483B;color:#fff}
 </style>
 </head>
 <body>
@@ -347,12 +346,19 @@ function apresentador(){
   const chaveR=()=>E.rod+'_'+E.qi;
   async function novoJogo(){pin=String(Math.floor(100000+Math.random()*900000));ls.set('quiz_host_pin',pin);
     await NET.set('jogos/'+pin,{estado:{fase:'lobby',rod:0,qi:0,criado:NET.ts()}});ligar()}
-  let desl=[];
-  function ligar(){desl.forEach(f=>f());desl=[
-    NET.on('jogos/'+pin+'/estado',v=>{if(!v){novoJogo();return}E=v;desenha()}),
+  let desl=[],primeiro=true;
+  function ligar(){primeiro=true;desl.forEach(f=>f());desl=[
+    NET.on('jogos/'+pin+'/estado',v=>{if(!v){novoJogo();return}
+      /* ao reabrir a tela no meio de um jogo, volta para a sala em vez de seguir sozinho */
+      if(primeiro){primeiro=false;if(v.fase!=='lobby'&&v.fase!=='podio'){setE({fase:'lobby'});return}}
+      E=v;desenha()}),
     NET.on('jogos/'+pin+'/jogadores',v=>{J=v||{};atualizaParcial()}),
     NET.on('jogos/'+pin+'/resp',v=>{R=v||{};atualizaParcial()})]}
-  const setE=o=>NET.update('jogos/'+pin+'/estado',o);
+  /* toda pergunta começa sem respostas antigas (evita respostas de testes anteriores) */
+  const setE=async o=>{if(o.fase==='intro'){const r=('rod' in o)?o.rod:E.rod,q=('qi' in o)?o.qi:E.qi;await NET.remove('jogos/'+pin+'/resp/'+r+'_'+q)}return NET.update('jogos/'+pin+'/estado',o)};
+  /* Reiniciar tudo: apaga o jogo (jogadores, respostas e placar) e cria um PIN novo. Pede um segundo toque para confirmar. */
+  function botaoReiniciar(b){let arm=null;b.onclick=async()=>{if(!arm){b.textContent='Toque de novo para zerar tudo';b.classList.add('alerta');arm=setTimeout(()=>{arm=null;b.textContent='Reiniciar tudo';b.classList.remove('alerta')},4000);return}
+    clearTimeout(arm);desl.forEach(f=>f());desl=[];const velho=pin;ls.del('quiz_host_pin');J={};R={};E=null;ultimaFase='';rodSel=0;await NET.remove('jogos/'+velho);novoJogo()}}
 
   function desenha(forca){
     if(!E)return;const f=E.fase+'|'+E.rod+'|'+E.qi;if(f===ultimaFase&&!forca)return;ultimaFase=f;
@@ -368,11 +374,11 @@ function apresentador(){
     const url=BASE+'?pin='+pin;
     palco.innerHTML='<section class="lobby"><div class="entrar"><p class="url">Entre em <b>'+esc(BASE.replace(/^https?:\/\//,''))+'</b></p><p class="pin-l">PIN do jogo</p><p class="pin">'+pin.slice(0,3)+' '+pin.slice(3)+'</p><div id="qr" role="img" aria-label="QR code para entrar no jogo"></div><p class="pin-l">ou aponte a câmera do celular</p></div>'+
       '<div class="sala"><div class="sala-h"><p class="cont-j"><span id="nj">0</span><span>jogadores</span></p><div class="cfg" role="group" aria-label="Rodada">'+RODADAS.map((r,i)=>'<button class="rod" data-r="'+i+'" aria-pressed="'+(i===rodSel)+'">'+r.nome+' · '+r.quando+'</button>').join('')+'</div></div><div class="jogadores" id="jog"></div>'+
-      '<div class="acoes" style="justify-content:space-between"><button class="ic" id="novo">Novo PIN</button><button class="btn lar" id="comecar">Começar</button></div></div></section>';
+      '<div class="acoes" style="justify-content:space-between"><button class="ic" id="novo">Reiniciar tudo</button><button class="btn lar" id="comecar">Começar</button></div></div></section>';
     try{new QRCode($('qr'),{text:url,width:300,height:300,colorDark:'#123F2E',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M})}catch(e){$('qr').textContent=url}
     palco.querySelectorAll('.rod').forEach(b=>b.onclick=()=>{rodSel=+b.dataset.r;palco.querySelectorAll('.rod').forEach(x=>x.setAttribute('aria-pressed',x===b))});
     $('comecar').onclick=()=>{ctx();if(!Object.keys(J).length)return;setE({fase:'intro',rod:rodSel,qi:0})};
-    $('novo').onclick=()=>{ls.del('quiz_host_pin');novoJogo()};
+    botaoReiniciar($('novo'));
     $('rodape').innerHTML='<span>Toque num jogador para removê-lo</span><span><kbd>Espaço</kbd> começa · <kbd>F</kbd> tela cheia</span>';
     desenhaJogadores();tocar('lobby');
   }
@@ -436,10 +442,10 @@ function apresentador(){
   function podio(){const o=ordem(J);
     let h='<section class="podio"><p class="eyebrow">'+RODADAS[E.rod].nome+' encerrada</p><h2>Pódio</h2><div class="degraus">';
     [[1,'d2'],[0,'d1'],[2,'d3']].forEach(([k,c])=>{const id=o[k];if(!id)return;h+='<div class="degrau '+c+'">'+avHTML(J[id].av)+'<p class="quemp">'+esc(J[id].nome)+'</p><p class="ptsp">'+(J[id].pts||0)+' pontos</p><div class="coluna">'+(k+1)+'</div></div>'});
-    h+='</div><div class="acoes"><button class="btn" id="bOutra">Jogar a '+(E.rod?'Rodada 1':'Rodada 2')+'</button><button class="btn lar" id="bNovo">Voltar à sala</button></div></section>';
+    h+='</div><div class="acoes"><button class="btn" id="bOutra">Jogar a '+(E.rod?'Rodada 1':'Rodada 2')+'</button><button class="btn lar" id="bNovo">Voltar à sala</button><button class="ic" id="bZera">Reiniciar tudo</button></div></section>';
     palco.innerHTML=h;sTambor();setTimeout(sTambor,1500);setTimeout(()=>{sFanfarra();confete()},4200);
     $('bOutra').onclick=()=>setE({fase:'intro',rod:E.rod?0:1,qi:0});
-    $('bNovo').onclick=()=>{rodSel=E.rod?0:1;setE({fase:'lobby'})};
+    $('bNovo').onclick=()=>{rodSel=E.rod?0:1;setE({fase:'lobby'})};botaoReiniciar($('bZera'));
     $('rodape').innerHTML='<span>A pontuação continua na próxima rodada</span><span></span>'}
 
   document.addEventListener('keydown',e=>{if(!E)return;const t=e.target&&e.target.tagName;if(t==='INPUT')return;
