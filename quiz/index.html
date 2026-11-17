@@ -268,29 +268,29 @@ const FIREBASE_CONFIG = {
 
 const TEMPO = 20;            // segundos por pergunta
 const RODADAS = [
- {nome:"Rodada 1",quando:"Volta do almoço",tema:"O que vimos de manhã",perguntas:[
-  {q:"Quantos documentos formam o contrato no novo modelo?",r:["1","2","3","4"],c:2,
-   e:"<b>Três:</b> o contrato, o documento descritivo e o anexo técnico, que é a peça nova."},
-  {q:"No contrato de exemplo, quanto o Valora Minas soma em 24 meses?",r:["R$ 155 mil","R$ 1,9 milhão","R$ 3,7 milhões","R$ 13,9 milhões"],c:3,
-   e:"<b>R$ 13.886.956,74</b>, na cláusula 6. O recurso federal soma R$ 3,7 milhões no mesmo período."},
-  {q:"Onde o Valora Minas é detalhado, com componentes, metas e descontos?",r:["Cláusula 6 do contrato","Seção 6 do documento descritivo","Anexo técnico","Edital de credenciamento"],c:2,
-   e:"<b>No anexo técnico.</b> O contrato só cita o valor, e o documento descritivo trata do recurso federal."},
-  {q:"Quantos módulos tem hoje a Política Valora Minas?",r:["3","4","5","7"],c:2,
-   e:"<b>Cinco:</b> Valor em Saúde, Hospitais de Pequeno Porte, Opera Mais, Hospitais Regionais e Unidades de Internação Estratégicas."},
-  {q:"Qual resolução traz as diretrizes do Programa Estadual de Portas de Urgência e Emergência?",r:["Resolução 7.223/2020","Resolução 9.909/2024","Resolução 10.446/2025","Resolução 10.838/2025"],c:2,
-   e:"<b>Resolução SES/MG nº 10.446/2025</b>, com as alterações posteriores. A 7.223/2020 institui a política inteira."}
+ {nome:"Rodada 1",quando:"Antes do almoço",tema:"Os três componentes do contrato",perguntas:[
+  {q:"No contrato de exemplo, qual é o papel do município de Aimorés?",r:["Contratante","Contratado","Interveniente","Gestor do contrato"],c:2,
+   e:"<b>Interveniente.</b> A contratante é o Estado, pela SES/MG, e o contratado é a Santa Casa. A gestão do contrato é da CCTA."},
+  {q:"Em qual cláusula do contrato aparecem o valor federal e o valor estimado da política estadual?",r:["Cláusula 3","Cláusula 6","Cláusula 8","Cláusula 17"],c:1,
+   e:"<b>Cláusula 6, dos recursos financeiros.</b> Ela cita os valores e manda o detalhe da política estadual para o anexo técnico."},
+  {q:"No documento descritivo, quanto do valor pré-fixado depende das metas quantitativas?",r:["40%","50%","60%","100%"],c:2,
+   e:"<b>60%.</b> Os outros 40% dependem das metas qualitativas (item 6.3 do documento descritivo)."},
+  {q:"Em qual seção do documento descritivo entram as políticas estaduais?",r:["Seção 5","Seção 6","Seção 7","Seção 8"],c:3,
+   e:"<b>Seção 8.</b> A seção 6 trata dos recursos federais e a 7 traz o quadro síntese deles."},
+  {q:"O hospital não aderiu a um módulo do Valora Minas. O que acontece com essa parte no anexo técnico?",r:["Fica em branco","Recebe valor zero","Sai do anexo final","Vai para o documento descritivo"],c:2,
+   e:"<b>Sai do anexo final.</b> Só ficam os módulos e componentes aderidos pelo hospital."}
  ]},
- {nome:"Rodada 2",quando:"Fim do dia",tema:"O que vimos à tarde",perguntas:[
+ {nome:"Rodada 2",quando:"Fim da tarde",tema:"Como preencher o anexo",perguntas:[
+  {q:"Para achar o hospital na resolução de pactuação, qual informação você procura?",r:["CNPJ","CNES","Número do contrato","Nome do município"],c:1,
+   e:"<b>O CNES.</b> É a chave que liga o hospital no contrato, no documento descritivo, no anexo e nas resoluções."},
+  {q:"A tipologia e o valor do Programa de Portas vêm de qual fonte?",r:["Resolução de diretrizes (10.446)","Resolução de pactuação","Manual de Indicadores","Documento descritivo"],c:1,
+   e:"<b>Da resolução de pactuação</b>: ela diz quem é beneficiário, em qual tipologia e com qual valor. As regras do programa ficam na resolução de diretrizes."},
   {q:"De onde vêm a meta, a fonte e a periodicidade de cada indicador do anexo?",r:["Da resolução de pactuação","Do Manual de Indicadores","Da cláusula 9 do contrato","Cada município define"],c:1,
-   e:"<b>Do Manual de Indicadores do Valora Minas</b> (versão de maio de 2026). O anexo copia só os indicadores do perfil do hospital."},
-  {q:"O hospital não aderiu a um módulo. O que fazer com essa seção no anexo?",r:["Deixar em branco","Marcar “N” e manter","Excluir a seção","Preencher com zero"],c:2,
-   e:"<b>Excluir.</b> Pelo modelo, as seções de módulos não aderidos saem do anexo final."},
-  {q:"Com que frequência o desempenho do hospital é apurado?",r:["Mensal","Bimestral","Quadrimestral","Anual"],c:2,
-   e:"<b>Quadrimestral</b>, conforme o cronograma da política pactuado pelo município."},
-  {q:"No Programa de Portas, quando o hospital é descredenciado?",r:["Na primeira falha","2 quadrimestres seguidos ou 3 alternados","3 seguidos ou 5 alternados","Nunca"],c:1,
-   e:"<b>Art. 17 da Resolução 10.446/2025.</b> A regra de 3 seguidos ou 5 alternados é a dos leitos de saúde mental."},
-  {q:"O hospital cumpriu 85% da meta do indicador. Quanto do recurso do componente ele recebe?",r:["100%","85%","80%","60%"],c:2,
-   e:"85% cai na faixa de <b>80% a 89%</b>, que paga <b>80%</b> do recurso. E lembre: o modelo não tem faixa de 70% a 79%."}
+   e:"<b>Do Manual de Indicadores do Valora Minas</b> (versão de agosto de 2026). O anexo copia só os indicadores do perfil do hospital."},
+  {q:"Na tabela de faixas do Programa de Portas, o hospital fez 75% da meta. Quanto ele recebe?",r:["0%","70%","75%","80%"],c:1,
+   e:"<b>70%.</b> O resultado cai na faixa de 70% a 80%. As faixas precisam cobrir todos os resultados, sem lacunas."},
+  {q:"No Programa de Portas, quando o hospital é descredenciado?",r:["Na primeira falha","2 quadrimestres seguidos ou 3 alternados","3 quadrimestres seguidos ou 5 alternados","Nunca"],c:2,
+   e:"<b>3 quadrimestres seguidos ou 5 alternados</b>, regra vigente do Programa de Portas (art. 17 da Resolução SES/MG nº 10.446/2025). Antes vêm a notificação e a suspensão."}
  ]}
 ];
 const PERSONAGENS=[["🦊","#F6A04D"],["🐼","#E9EEF2"],["🐸","#8FD694"],["🦉","#C9A27C"],["🐯","#F7C35F"],["🐨","#B8C4CC"],["🐙","#F29BB4"],["🦄","#D7B8F3"],["🐢","#9FD8A8"],["🐝","#F9E07F"],["🦁","#F2B45E"],["🐧","#A9D6F5"],["🐰","#F4D3E0"],["🐻","#C79C77"],["🦜","#7FD3C5"],["🐳","#8EC5F2"]];
